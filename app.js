@@ -125,7 +125,6 @@ class App {
             'college.glb',
             // called when the resource is loaded
             function (gltf) {
-
                 const college = gltf.scene.children[0];
                 self.scene.add(college);
 
@@ -140,6 +139,7 @@ class App {
                         } else if (child.material.name.indexOf("SkyBox") !== -1) {
                             const mat1 = child.material;
                             const mat2 = new THREE.MeshBasicMaterial({ map: mat1.map });
+                            mat2.color.setRGB(0.1, 0, 0); // Set the color to a dark red
                             child.material = mat2;
                             mat1.dispose();
 
@@ -164,15 +164,11 @@ class App {
             },
             // called while loading is progressing
             function (xhr) {
-
-                self.loadingBar.progress = (xhr.loaded / xhr.total);
-
+                self.loadingBar.progress = xhr.loaded / xhr.total;
             },
             // called when loading has errors
             function (error) {
-
                 console.log('An error happened');
-
             }
         );
     }
