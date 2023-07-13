@@ -6,7 +6,7 @@ import { Stats } from './libs/stats.module.js';
 import { LoadingBar } from './libs/LoadingBar.js';
 import { VRButton } from './libs/VRButton.js';
 import { CanvasUI } from './libs/CanvasUI.js';
-import { GazeController } from './libs/GazeController.js';
+import { GazeController } from './libs/GazeController.js'
 import { XRControllerModelFactory } from './libs/three/jsm/XRControllerModelFactory.js';
 
 class App {
@@ -86,6 +86,11 @@ class App {
 
             self.scene.environment = envMap;
 
+            // Adjust skybox intensity
+            const skyboxIntensity = 0.1;
+            const skyboxMaterial = self.scene.background.material;
+            skyboxMaterial.emissiveIntensity = skyboxIntensity;
+            skyboxMaterial.needsUpdate = true;
         }, undefined, (err) => {
             console.error('An error occurred setting the environment');
         });
@@ -128,6 +133,10 @@ class App {
                             const mat2 = new THREE.MeshBasicMaterial({ map: mat1.map });
                             child.material = mat2;
                             mat1.dispose();
+
+                            // Adjust skybox intensity
+                            const skyboxIntensity = 0.1;
+                            mat2.emissiveIntensity = skyboxIntensity;
                         }
                     }
                 });
