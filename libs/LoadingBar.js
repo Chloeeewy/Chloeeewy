@@ -20,7 +20,7 @@ class LoadingBar{
 		barBase.style.height = '15px';
 		this.domElement.appendChild(barBase);
 		const bar = document.createElement("div");
-		bar.style.background = '#FF0000';
+		bar.style.background = '#CD5C5C';
 		bar.style.width = '50%';
 		bar.style.borderRadius = '10px';
 		bar.style.height = '100%';
