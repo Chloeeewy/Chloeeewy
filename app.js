@@ -28,8 +28,15 @@ class App {
         this.scene = new THREE.Scene();
         this.scene.add(this.dolly);
 
-        const ambient = new THREE.HemisphereLight(0x111111, 0x000000, 0.3);
+        const ambient = new THREE.HemisphereLight(0xFF0000, 0x330000, 0.4);
         this.scene.add(ambient);
+
+        const hemiLight = new THREE.HemisphereLight(0xFF0000, 0x330000, 0.2);
+        this.scene.add(hemiLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xFF0000, 0.2);
+        directionalLight.position.set(1, 1, 1);
+        this.scene.add(directionalLight);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -78,6 +85,7 @@ class App {
             pmremGenerator.dispose();
 
             self.scene.environment = envMap;
+
         }, undefined, (err) => {
             console.error('An error occurred setting the environment');
         });
@@ -103,39 +111,32 @@ class App {
             'college.glb',
             // called when the resource is loaded
             function (gltf) {
+
                 const college = gltf.scene.children[0];
                 self.scene.add(college);
 
                 college.traverse(function (child) {
                     if (child.isMesh) {
-                        if (child.name.indexOf('PROXY') !== -1) {
+                        if (child.name.indexOf("PROXY") !== -1) {
                             child.material.visible = false;
                             self.proxy = child;
                         } else if (child.material.name.indexOf('Glass') !== -1) {
                             child.material.opacity = 0.1;
                             child.material.transparent = true;
-                        } else if (child.material.name.indexOf('SkyBox') !== -1) {
+                        } else if (child.material.name.indexOf("SkyBox") !== -1) {
                             const mat1 = child.material;
                             const mat2 = new THREE.MeshBasicMaterial({ map: mat1.map });
-
-                            // Adjust the skybox emissive intensity
-                            mat2.emissiveIntensity = 0.3;
-
-                            // Adjust the skybox color to a darker tone
-                            const skyboxColor = new THREE.Color(0x222222);
-                            mat2.color = skyboxColor;
-
                             child.material = mat2;
                             mat1.dispose();
                         }
                     }
                 });
 
-                const door1 = college.getObjectByName('LobbyShop_Door__1_');
-                const door2 = college.getObjectByName('LobbyShop_Door__2_');
+                const door1 = college.getObjectByName("LobbyShop_Door__1_");
+                const door2 = college.getObjectByName("LobbyShop_Door__2_");
                 const pos = door1.position.clone().sub(door2.position).multiplyScalar(0.5).add(door2.position);
                 const obj = new THREE.Object3D();
-                obj.name = 'LobbyShop';
+                obj.name = "LobbyShop";
                 obj.position.copy(pos);
                 college.add(obj);
 
@@ -145,11 +146,15 @@ class App {
             },
             // called while loading is progressing
             function (xhr) {
+
                 self.loadingBar.progress = (xhr.loaded / xhr.total);
+
             },
             // called when loading has errors
             function (error) {
+
                 console.log('An error happened');
+
             }
         );
     }
@@ -164,11 +169,15 @@ class App {
         const timeoutId = setTimeout(connectionTimeout, 2000);
 
         function onSelectStart(event) {
+
             this.userData.selectPressed = true;
+
         }
 
         function onSelectEnd(event) {
+
             this.userData.selectPressed = false;
+
         }
 
         function onConnected(event) {
@@ -192,12 +201,12 @@ class App {
             panelSize: { height: 0.5 },
             height: 256,
             name: { fontSize: 50, height: 70 },
-            info: { position: { top: 70, backgroundColor: '#ccc', fontColor: '#000' } }
-        };
+            info: { position: { top: 70, backgroundColor: "#ccc", fontColor: "#000" } }
+        }
         const content = {
-            name: 'name',
-            info: 'info'
-        };
+            name: "name",
+            info: "info"
+        }
 
         this.ui = new CanvasUI(content, config);
         this.scene.add(this.ui.mesh);
@@ -239,9 +248,9 @@ class App {
         pos.y += 1;
 
         let dir = new THREE.Vector3();
-        // Store original dolly rotation
+        //Store original dolly rotation
         const quaternion = this.dolly.quaternion.clone();
-        // Get rotation for movement from the headset pose
+        //Get rotation for movement from the headset pose
         this.dolly.quaternion.copy(this.dummyCam.getWorldQuaternion(this.workingQuaternion));
         this.dolly.getWorldDirection(dir);
         dir.negate();
@@ -259,7 +268,7 @@ class App {
             pos = this.dolly.getWorldPosition(this.origin);
         }
 
-        // Cast left
+        //cast left
         dir.set(-1, 0, 0);
         dir.applyMatrix4(this.dolly.matrix);
         dir.normalize();
@@ -270,7 +279,7 @@ class App {
             if (intersect[0].distance < wallLimit) this.dolly.translateX(wallLimit - intersect[0].distance);
         }
 
-        // Cast right
+        //cast right
         dir.set(1, 0, 0);
         dir.applyMatrix4(this.dolly.matrix);
         dir.normalize();
@@ -281,7 +290,7 @@ class App {
             if (intersect[0].distance < wallLimit) this.dolly.translateX(intersect[0].distance - wallLimit);
         }
 
-        // Cast down
+        //cast down
         dir.set(0, -1, 0);
         pos.y += 1.5;
         this.raycaster.set(pos, dir);
@@ -291,12 +300,12 @@ class App {
             this.dolly.position.copy(intersect[0].point);
         }
 
-        // Restore the original rotation
+        //Restore the original rotation
         this.dolly.quaternion.copy(quaternion);
     }
 
     get selectPressed() {
-        return this.controllers !== undefined && (this.controllers[0].userData.selectPressed || this.controllers[1].userData.selectPressed);
+        return (this.controllers !== undefined && (this.controllers[0].userData.selectPressed || this.controllers[1].userData.selectPressed));
     }
 
     showInfoboard(name, info, pos) {
@@ -306,7 +315,7 @@ class App {
         this.ui.updateElement('name', info.name);
         this.ui.updateElement('info', info.info);
         this.ui.update();
-        this.ui.lookAt(camPos);
+        this.ui.lookAt(camPos)
         this.ui.visible = true;
         this.boardShown = name;
     }
@@ -319,7 +328,7 @@ class App {
 
             if (this.useGaze && this.gazeController !== undefined) {
                 this.gazeController.update();
-                moveGaze = this.gazeController.mode === GazeController.Modes.MOVE;
+                moveGaze = (this.gazeController.mode == GazeController.Modes.MOVE);
             }
 
             if (this.selectPressed || moveGaze) {
@@ -339,7 +348,7 @@ class App {
                         }
                     });
                     if (!boardFound) {
-                        this.boardShown = '';
+                        this.boardShown = "";
                         this.ui.visible = false;
                     }
                 }
