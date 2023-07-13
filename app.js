@@ -29,7 +29,7 @@ class App{
 		this.scene = new THREE.Scene();
         this.scene.add( this.dolly );
         
-		const ambient = new THREE.HemisphereLight(0xFFFFFF, 0xAAAAAA, 0.5);
+		const ambient = new THREE.HemisphereLight(0xFFFFFF, 0xAAAAAA, 0.3);
 		this.scene.add(ambient);
 
 		this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -80,7 +80,7 @@ class App{
 
           self.scene.environment = envMap;
 
-            const ambient = new THREE.HemisphereLight(0x770000, 0x222222, 0.5);
+            const ambient = new THREE.HemisphereLight(0x770000, 0x222222, 0.3);
             self.scene.add(ambient);
         }, undefined, (err) => {
             console.error('An error occurred setting the environment');
