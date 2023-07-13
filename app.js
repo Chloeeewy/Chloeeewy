@@ -90,9 +90,16 @@ class App {
             const skyboxIntensity = 0.1;
             mat2.emissiveIntensity = skyboxIntensity;
             mat2.color.setRGB(0.1, 0, 0);
+
+            // Darken skybox texture
             const skyboxMaterial = self.scene.background.material;
             skyboxMaterial.emissiveIntensity = skyboxIntensity;
+            skyboxMaterial.map.encoding = THREE.sRGBEncoding; // Ensure correct encoding
+            skyboxMaterial.map.image = skyboxMaterial.map.image.clone(); // Clone the image to avoid modifying the original
+            skyboxMaterial.map.image.multiplyScalar(0.5); // Darken the image by multiplying by a factor (e.g., 0.5)
+            skyboxMaterial.map.needsUpdate = true;
             skyboxMaterial.needsUpdate = true;
+
         }, undefined, (err) => {
             console.error('An error occurred setting the environment');
         });
