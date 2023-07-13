@@ -88,6 +88,8 @@ class App {
 
             // Adjust skybox intensity
             const skyboxIntensity = 0.1;
+            mat2.emissiveIntensity = skyboxIntensity;
+            mat2.color.setRGB(0.1, 0, 0);
             const skyboxMaterial = self.scene.background.material;
             skyboxMaterial.emissiveIntensity = skyboxIntensity;
             skyboxMaterial.needsUpdate = true;
