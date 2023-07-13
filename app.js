@@ -80,9 +80,14 @@ class App{
 
           self.scene.environment = envMap;
 
-        }, undefined, (err)=>{
-            console.error( 'An error occurred setting the environment');
-        } );
+            const ambient = new THREE.HemisphereLight(0x770000, 0x222222, 0.5);
+            self.scene.add(ambient);
+        }, undefined, (err) => {
+            console.error('An error occurred setting the environment');
+        });
+
+        // Adjust background color here
+        this.renderer.setClearColor(0x330000);
     }
     
     resize(){
